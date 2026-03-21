@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+# -*- mode: conf -*-
+[Init]
+nftables_family = inet
+nftables_table  = f2b-table
+blocktype       = drop
+# Remove nftables prefix. Set names are limited to 15 char so we want them all
+nftables_set_prefix =
+

@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+# -*- mode: conf -*-
+[DEFAULT]
+bantime.increment = true
+banaction = nftables-multiport
+chain = f2b-chain
+banaction_allports = nftables-allports
+
+[sshd]
+enabled = true
+

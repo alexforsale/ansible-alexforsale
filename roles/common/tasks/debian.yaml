@@ -1,0 +1,114 @@
+---
+- name: apt update
+  block:
+  
+    - name: update package repository cache
+      ansible.builtin.apt:
+        update_cache: yes
+  
+    - name: update all packages to their latest version
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+  become: true
+
+- name: use nftables as firewall
+  block:
+
+  - name: install nftables
+    ansible.builtin.apt:
+      name: nftables
+      state: latest
+      
+  - name: Check if ufw exists
+    ansible.builtin.command: which ufw
+    register: ufw_check
+    ignore_errors: true
+    
+  - name: disable ufw
+    ansible.builtin.systemd_service:
+      name: ufw
+      enabled: false
+    when: ufw_check.rc == 0
+
+  - name: use our nftables.conf file
+    ansible.builtin.template:
+      src: nftables.conf.j2
+      dest: /etc/nftables.conf
+      owner: root
+      group: root
+      mode: '0644'
+      validate: nft -cf %s
+
+  - name: enable nftables systemd service
+    ansible.builtin.systemd_service:
+      name: nftables
+      enabled: true
+      state: started
+  become: true
+
+- name: setup fail2ban
+  block:
+
+  - name: install fail2ban
+    ansible.builtin.apt:
+      name: fail2ban
+      state: latest
+
+
+  - name: setup fail2ban.local
+    ansible.builtin.template:
+      src: fail2ban.local.j2
+      dest: /etc/fail2ban/fail2ban.local
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: setup jail.local
+    ansible.builtin.template:
+      src: jail.local.j2
+      dest: /etc/fail2ban/jail.local
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: setup nftables-common.local
+    ansible.builtin.template:
+      src: nftables-common.local.j2
+      dest: /etc/fail2ban/action.d/nftables-common.local
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: enable fail2ban systemd service
+    ansible.builtin.systemd_service:
+      name: fail2ban
+      enabled: true
+      state: started
+
+  become: true
+
+- name: openvpn
+  block:
+
+  - name: install package
+    ansible.builtin.apt:
+      name: openvpn
+      state: present
+      
+  - name: server
+    block:
+
+    - name: extra server packages
+      ansible.builtin.apt:
+        name:
+          - bridge-utils
+          - radvd
+        state: present
+      when: "'openvpn_server' in group_names"
+
+  - name: clients
+    block:
+      - name: client
+    when: "'openvpn_server' in group_names"
+  become: true

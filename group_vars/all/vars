@@ -1,0 +1,4 @@
+# -*- mode: yaml -*-
+---
+vpn_subnet4: 10.220.149.0/24
+vpn_subnet6: "{{ vault_vpn_subnet6 }}"

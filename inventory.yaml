@@ -1,0 +1,12 @@
+openvpn_servers:
+  hosts:
+    algeria.alexforsale.xyz:
+      ansible_python_interpreter: /usr/bin/python3
+      network:
+        eth: ens3
+other_servers:
+  hosts:
+    burundi.alexforsale.xyz:
+      ansible_python_interpreter: /usr/bin/python3
+    madagascar.alexforsale.xyz:
+      ansible_python_interpreter: /usr/bin/python3
