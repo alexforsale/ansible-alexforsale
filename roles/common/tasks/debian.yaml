@@ -88,27 +88,27 @@
 
   become: true
 
-- name: openvpn
-  block:
+# - name: openvpn
+#   block:
 
-  - name: install package
-    ansible.builtin.apt:
-      name: openvpn
-      state: present
+#   - name: install package
+#     ansible.builtin.apt:
+#       name: openvpn
+#       state: present
       
-  - name: server
-    block:
+#   - name: server
+#     block:
 
-    - name: extra server packages
-      ansible.builtin.apt:
-        name:
-          - bridge-utils
-          - radvd
-        state: present
-      when: "'openvpn_server' in group_names"
+#     - name: extra server packages
+#       ansible.builtin.apt:
+#         name:
+#           - bridge-utils
+#           - radvd
+#         state: present
+#       when: "'openvpn_server' in group_names"
 
-  - name: clients
-    block:
-      - name: client
-    when: "'openvpn_server' in group_names"
-  become: true
+#   - name: clients
+#     block:
+#       - name: client
+#     when: "'openvpn_server' in group_names"
+#   become: true

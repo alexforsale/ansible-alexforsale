@@ -36,8 +36,9 @@ table inet firewall {
     udp dport 123 counter accept comment "accept ntp"
     ip protocol 47 counter accept comment "accept GRE"
     tcp dport 500 counter accept comment "accept IKE"
-    ip saddr [% vpn_subnet4 %] counter accept comment "Connection from vpn subnet"
     ip6 saddr [% vpn_subnet6 %] counter accept comment "Connection from vpn subnet"
+    ip6 saddr [% lan_subnet6 %] counter jump local comment "IPV6 LAN addresses"
+    ip protocol igmp counter accept comment "Accept IGMP"
   }
 
   chain local {
@@ -45,12 +46,12 @@ table inet firewall {
     udp dport netbios-ns counter accept comment "Accept NetBIOS Name Service (nmbd)"
     udp dport netbios-dgm counter accept comment "Accept NetBIOS Datagram Service (nmbd)"
     tcp dport netbios-ssn counter accept comment "Accept NetBIOS Session Service (smbd)"
+    tcp dport microsoft-ds counter accept comment "Accept NetBIOS Session Service (smbd)"
     udp sport { bootpc, 4011 } udp dport { bootps, 4011 } counter accept comment "Accept PXE"
     udp dport tftp counter accept comment "Accept TFTP"
     ip daddr 224.0.0.251 udp dport mdns accept comment "mDNS multicast IPv4"
     udp dport mdns ip6 daddr ff02::fb counter accept comment "Accept mDNS"
     udp dport mdns ip daddr 224.0.0.251 accept comment "Accept mDNS"
-    ip protocol igmp counter accept comment "Accept IGMP"
     udp dport 5678 counter accept comment "mikrotik neighbor discovery"
     udp dport 5060 counter accept comment "SIP"
     tcp dport 8443 counter accept comment "alternate https"
@@ -62,6 +63,8 @@ table inet firewall {
     ip protocol igmp counter accept comment "accept igmp"
     ip6 nexthdr ipv6-icmp icmpv6 type { mld-listener-query, mld-listener-report } counter accept comment "Accept mld"
     udp dport 1900 counter accept comment "accept ssdp"
+    udp dport 22000 counter accept
+    ip saddr [% vpn_subnet4 %] counter accept comment "Connection from vpn subnet"
   }
 
   chain inbound {
