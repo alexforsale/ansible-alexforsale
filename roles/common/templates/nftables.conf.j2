@@ -63,6 +63,7 @@ table inet firewall {
     ip protocol igmp counter accept comment "accept igmp"
     ip6 nexthdr ipv6-icmp icmpv6 type { mld-listener-query, mld-listener-report } counter accept comment "Accept mld"
     udp dport 1900 counter accept comment "accept ssdp"
+    tcp dport 22000 counter accept
     udp dport 22000 counter accept
     ip saddr [% vpn_subnet4 %] counter accept comment "Connection from vpn subnet"
   }
