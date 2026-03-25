@@ -37,7 +37,7 @@ table inet firewall {
     ip protocol 47 ct state new counter accept comment "accept GRE"
     tcp dport 500 ct state new counter accept comment "accept IKE"
     ip6 saddr [% vpn_subnet6 %] counter accept comment "Connection from vpn subnet"
-    ip6 saddr [% lan_subnet6 %] counter jump local comment "IPV6 LAN addresses"
+    ip6 saddr [% lan_subnet6 %] counter accept comment "IPV6 LAN addresses"
     ip protocol igmp counter accept comment "Accept IGMP"
   }
 
