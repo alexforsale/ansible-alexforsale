@@ -90,7 +90,7 @@ table inet firewall {
     oifname "lo" ip6 daddr != ::1/128 counter drop
   }
 
-{% if 'openvpn_server' in group_names %}
+{% if 'openvpn_servers' in group_names %}
   chain forward {
     type filter hook forward priority 0; policy accept
   }
