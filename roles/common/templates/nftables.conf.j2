@@ -117,7 +117,7 @@ table ip nat {
 
   chain POSTROUTING {
     type nat hook postrouting priority 100; policy accept
-{% if 'openvpn_server' in group_names %}
+{% if 'openvpn_servers' in group_names %}
     oifname [% network.eth %] ip saddr 10.0.0.0/8 counter masquerade
 {% endif %}
   }
