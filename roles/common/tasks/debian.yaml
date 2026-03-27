@@ -88,6 +88,19 @@
 
   become: true
 
+- name: ssh
+  block:
+
+  - name: disable password authentication
+    ansible.builtin.template:
+      src: 99-passwd.conf.j2
+      dest: /etc/ssh/sshd_config.d/99-passwd.conf.j2
+      owner: root
+      group: root
+      mode: '0644'
+
+  become: true
+
 # - name: openvpn
 #   block:
 
