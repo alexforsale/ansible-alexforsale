@@ -80,7 +80,7 @@ table inet firewall {
     ip protocol igmp ip daddr 224.0.0.1 counter accept comment "Accept IGMP"
     tcp dport @tcp_open_ports tcp flags & (fin | syn | rst | ack) == syn counter accept
     udp dport @udp_open_ports counter accept
-    meta pkttype {broadcast, multicast} drop
+    meta pkttype {broadcast, multicast} counter drop
   }
 
   chain local {
