@@ -1,0 +1,31 @@
+---
+- name: setup sshd
+  block:
+
+  - name: apt install openssh-server
+    ansible.builtin.apt:
+      name: openssh-server
+      state: latest
+    when: ansible_os_family | lower == 'debian'
+
+  - name: pacman -S openssh
+    community.general.pacman:
+      name: openssh
+      state: latest
+    when: ansible_os_family | lower == 'archlinux'
+
+  - name: disable password authentication
+    ansible.builtin.template:
+      src: 99-passwd.conf.j2
+      dest: /etc/ssh/sshd_config.d/99-passwd.conf.j2
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: enable sshd systemd service
+    ansible.builtin.systemd_service:
+      name: sshd
+      enabled: true
+      state: started
+
+  become: true

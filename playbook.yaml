@@ -1,4 +1,24 @@
 ---
-- hosts: all
+- name: update package cache
+  hosts: all
   roles:
-    - common
+    - update_packages
+  tags: update_packages
+
+- name: setup nftables
+  hosts: all
+  roles:
+    - nftables
+  tags: nftables 
+
+- name: setup fail2ban
+  hosts: all
+  roles:
+    - fail2ban
+  tags: fail2ban 
+
+- name: setup sshd
+  hosts: all
+  roles:
+    - sshd
+  tags: sshd 

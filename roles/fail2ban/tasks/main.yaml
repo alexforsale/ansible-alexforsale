@@ -1,0 +1,39 @@
+---
+- name: setup fail2ban
+  block:
+
+  - name: install fail2ban
+    ansible.builtin.apt:
+      name: fail2ban
+      state: latest
+    when: ansible_os_family | lower == 'debian'
+
+  - name: install fail2ban
+    community.general.pacman:
+      name: fail2ban
+      state: latest
+    when: ansible_os_family | lower == 'archlinux'
+
+  - name: setup fail2ban.local
+    ansible.builtin.template:
+      src: fail2ban.local.j2
+      dest: /etc/fail2ban/fail2ban.local
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: setup jail.local
+    ansible.builtin.template:
+      src: jail.local.j2
+      dest: /etc/fail2ban/jail.local
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: enable fail2ban systemd service
+    ansible.builtin.systemd_service:
+      name: fail2ban
+      enabled: true
+      state: started
+
+  become: true

@@ -1,0 +1,49 @@
+---
+- name: nftables
+  block:
+
+  - name: install nftables
+    block:
+    - name: arch nftables
+      community.general.pacman:
+        name: nftables
+        state: latest
+      when: ansible_os_family | lower == 'archlinux'
+
+    - name: apt nftables
+      ansible.builtin.apt:
+        name: nftables
+        state: latest
+      when: ansible_os_family | lower == 'debian'
+    
+  - name: use our nftables.conf file
+    ansible.builtin.template:
+      src: nftables.conf.j2
+      dest: /etc/nftables.conf
+      owner: root
+      group: root
+      mode: '0644'
+      validate: nft -cf %s
+
+  - name: disable ufw
+    block:
+
+    - name: Check if ufw exists
+      ansible.builtin.command: which ufw
+      register: ufw_check
+      ignore_errors: true
+  
+    - name: disable ufw
+      ansible.builtin.systemd_service:
+        name: ufw
+        enabled: false
+      when: ufw_check.rc == 0
+    when: ansible_os_family | lower == 'debian'
+
+  - name: enable nftables systemd service
+    ansible.builtin.systemd_service:
+      name: nftables
+      enabled: true
+      state: started
+
+  become: true
