@@ -90,6 +90,7 @@ table inet firewall {
     udp dport mdns ip daddr 224.0.0.251 ct state new counter accept comment "Accept mDNS"
     udp sport 1900 udp dport >= 1024 meta pkttype unicast limit rate 4/second burst 20 packets accept comment "Accept UPnP IGD port mapping reply"
     udp sport netbios-ns udp dport >= 1024 meta pkttype unicast accept comment "Accept Samba Workgroup browsing replies"
+    udp sport 9993 udp dport >= 1024 counter accept comment "syncthing"
     ip protocol igmp counter accept comment "accept igmp"
     ip6 nexthdr ipv6-icmp icmpv6 type { mld-listener-query, mld-listener-report } counter accept comment "Accept mld"
     ip daddr 239.255.255.250 udp dport 1900 counter accept comment "accept ssdp"
